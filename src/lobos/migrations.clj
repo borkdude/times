@@ -6,12 +6,16 @@
                schema)))
 
 ;; to execute migrations:
+;; put lobos back in project.clj
+;; possibly adapt login settings in db.config
 ;; start a REPL
 ;; (use 'lobos.core 'lobos.connectivity 'lobos.migration 'lobos.migrations 'times.config)
 ;; (open-global (get-db-config))
 ;; (migrate)
 ;; or (roll-back)
 ;; or (roll-back)
+;; revert login settings in db.config
+;; remove lobos from project.clj
 ;; more info, see https://github.com/budu/lobos
 
 (defmigration create-foo-table

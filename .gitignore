@@ -19,3 +19,9 @@ resources/db.config
 .project
 
 .settings/ccw.repl.cmdhistory.prefs
+
+resources/db.config.local
+
+resources/db.config.production
+
+resources/db.config.remoteproduction
