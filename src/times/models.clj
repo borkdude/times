@@ -1,19 +1,31 @@
 (ns times.models
-  (:use korma.db korma.core times.config))
+  (:use korma.db korma.core times.config)
+  (:require [clojure.string :refer [trim]]))
 
 (defdb db (get-db-config))
 
-(defentity messages)
+(defentity users)
 
-#_(select messages)
+(defentity projects)
+                          
+(defn get-projects-of-user [name]
+  (select projects
+          (join users (= :projects.user :users.id))
+          (where {:users.name name})))
 
-#_(insert messages
-        (values {:name "Michieltje" :message "I was here in the beginning"}))
+(defn insert-user [name password]
+  (insert users (values {:name name :password password})))
 
-(defn get-messages []
-  (select messages))
+(defn get-userid-by-name [name]
+  (:id (first (select users (fields [:id]) (where {:name name})))))
 
-(defn insert-message [msg]
-  (insert messages 
-          (values msg)))
-  
+(defn insert-project-of-user [name description user]
+  (let [name (trim name)
+        description (trim description)]
+    (insert projects (values 
+                       {:name name 
+                        :description description 
+                        :user (get-userid-by-name user)}))))
+
+(defn delete-project-of-user [id user]
+  (delete projects (where {:id id :user (get-userid-by-name user)})))

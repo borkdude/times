@@ -6,31 +6,50 @@
   (:require
         [times.models :as models]))
 
+(declare top-menu)
+
 (defhtml base [& content]
   (html5
    [:head
-    [:title "Welcome to Times"]
-    #_(include-css "/css/screen.css")]
-   [:body [:div#content content]]))
+    [:title "Welcome to Times"] 
+    (include-css "/webjars/bootstrap/2.3.1/css/bootstrap.min.css")
+    (include-css "/webjars/bootstrap/2.3.1/css/bootstrap-responsive.min.css")
+    (include-css "/css/times.css")
+    (include-js "/webjars/bootstrap/2.3.1/js/bootstrap.min.js")]
+   [:body 
+    (top-menu)
+    [:div.container content]]))
 
-(defn messages [msgs]
-  (for [msg msgs]
-    [:p (:name msg) " says " (:message msg)]))
+(defn top-menu []
+  [:div {:class "navbar navbar-fixed-top"}
+   [:div#navbar-inner
+   (link-to {:class "brand"} "/" "Times")
+   [:ul.nav 
+    [:li (link-to "/projects" "Projects")]]]])
   
-(defn insert-form []
+(defn main-page []
   (base
-    [:h1 "Insert something"]
-    [:p "Yes, really insert something"]
- 
-    ;here we call our show-guests function
-    ;to generate the list of existing comments
-    #_(show-guests)
-    [:hr]
-    [:p (messages (models/get-messages))]
-    (form-to [:post "/"]
-      [:p "Name:" (text-field "name")]
-      [:p "Message:" (text-area {:rows 10 :cols 40} "message")]
-      (submit-button "Insert"))))
+    [:h1 "Times"]
+    [:p "Timesheet management for teachers"]))
+
+
+(defn project-page [] 
+  (base 
+    [:h1 "Projects"]
+    [:table
+     [:tr
+      [:th "Naam"] [:th "Omschrijving"] [:th "Verwijderen"]]
+     (for [elt (models/get-projects-of-user "defaultuser")]
+       [:tr [:td (:name elt)]
+        [:td (:description elt)]
+        [:td (link-to (str "/projects/delete/" (:id elt)) "Delete")]
+        ])
+     ]
+    (form-to [:post "/projects/add"]
+             [:p "Nieuw project: " (text-field "name")]
+             [:p "Omschrijving:" (text-field "description")]
+             (submit-button "Toevoegen"))))
+    
 
 
   

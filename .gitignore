@@ -25,3 +25,7 @@ resources/db.config.local
 resources/db.config.production
 
 resources/db.config.remoteproduction
+
+resources/db.config.productionlocal
+
+resources/db.config.productionremote

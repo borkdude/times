@@ -2,7 +2,8 @@
   (:use times.controller
         compojure.core)
   (:require [noir.util.middleware :as noir-middleware]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [ring.middleware.resource :as resource]))
 
 (defroutes app-routes
   (route/resources "/")
@@ -12,8 +13,9 @@
 (def all-routes [times-routes app-routes])
 
 (def app (-> all-routes
-             noir-middleware/app-handler
-             ;;add your middlewares here
+           noir-middleware/app-handler
+           ;;add your middlewares here
+           (resource/wrap-resource "/META-INF/resources/")
              ))
 
 (def war-handler (noir-middleware/war-handler app))

@@ -6,49 +6,38 @@
                schema)))
 
 ;; to execute migrations:
-;; put lobos back in project.clj
+
 ;; possibly adapt login settings in db.config
-;; start a REPL
+;; lein with-profile lobos repl
 ;; (use 'lobos.core 'lobos.connectivity 'lobos.migration 'lobos.migrations 'times.config)
 ;; (open-global (get-db-config))
-;; (migrate)
-;; or (roll-back)
-;; or (roll-back)
+;; (migrate) or choose one migration: (migrate "create-users")
+;; or (rollback) or (rollback "create-users") or (rollback :all) or (rollback 1)
 ;; revert login settings in db.config
-;; remove lobos from project.clj
 ;; more info, see https://github.com/budu/lobos
 
-(defmigration create-foo-table
+(defmigration create-users
   (up []
-    (create 
-      (table :messages
-             (integer :id :primary-key :auto-inc)
-             (varchar :name 100 :not-null)
-             (text :message))))
+  	(create
+  		(table :users
+    		(integer :id :primary-key :auto-inc)
+    		(varchar :name 100 :not-null :unique)
+      	(varchar :password 100 :not-null))))
   (down []
-    (drop 
-      (table :messages))))
+    (drop
+      (table :users))))
 
-;(defmigration migration-1
-;  (up []
-;  	(create
-;  		(table :user
-;    		(integer :id :primary-key :auto-inc)
-;    		(varchar :name 100 :not-null)
-;      	(varchar :password 100 :not-null))))
-;  (down []
-;    (drop
-;      (table :user))))
-;
-;(defmigration migration-2
-;  (up []
-;  	(create
-;  		(table :project
-;    		(integer :id :primary-key :auto-inc)
-;    		(varchar :name 100 :not-null))))
-;  (down []
-;    (drop
-;      (table :project))))
+(defmigration create-projects
+  (up []
+  	(create
+  		(table :projects
+    		(integer :id :primary-key :auto-inc)
+    		(varchar :name 100 :not-null :unique)
+        (text :description)
+        (integer :user [:refer :users :id] :not-null))))
+  (down []
+    (drop
+      (table :projects))))
 ;
 ;(defmigration migration-3
 ;  (up []
