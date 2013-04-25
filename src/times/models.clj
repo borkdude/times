@@ -35,6 +35,19 @@
 ;;; weeks ;;;
 (defentity weeks)
 
+(defn get-weeks-of-user [name]
+  (select weeks
+          (join users (= :weeks.user :users.id))
+          (where {:users.name name})))
+
+(defn insert-week-of-user [& {:keys [weeknr year description budget name] :as k}]
+  (let [user (get-userid-by-name name)
+        k (dissoc (assoc k :user user) :name)]
+    (insert weeks (values k))))
+
+(defn delete-week-of-user [id name]
+  (delete weeks (where {:id id :user (get-userid-by-name name)})))
+  
 
 (defentity activities)
                           
