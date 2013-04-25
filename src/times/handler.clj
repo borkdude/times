@@ -8,7 +8,9 @@
 (defroutes app-routes
   (route/resources "/")
   (route/resources "/bootstrap/" 
-                   {:root "META-INF/resources/webjars/bootstrap/2.3.1/"}) 
+                   {:root "META-INF/resources/webjars/bootstrap/2.3.1/"})
+  (route/resources "/jquery/" 
+                   {:root "META-INF/resources/webjars/jquery/1.9.0/"})
   (route/not-found "Not Found"))
 
 ;;append your application routes to the all-routes vector

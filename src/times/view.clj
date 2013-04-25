@@ -15,7 +15,9 @@
     (include-css "/bootstrap/css/bootstrap.min.css")
     (include-css "/bootstrap/css/bootstrap-responsive.min.css")
     (include-css "/css/times.css")
-    (include-js "/bootstrap/js/bootstrap.min.js")]
+    (include-js "/jquery/jquery.min.js") ;; always include jquery before bootstrap!
+    (include-js "/bootstrap/js/bootstrap.js")
+    ]
    [:body 
     (top-menu)
     [:div.container content]]))
@@ -69,6 +71,14 @@
         [:td (:description elt)]
         [:td (link-to (str "/week/delete/" (:id elt)) "Delete")]
         ])]
+    [:button {:role "button" :class "btn" :data-toggle "modal" :data-target "#myModal"} "foo"]
+    [:div {:id "myModal" 
+           :class "modal hide fade" 
+           :tabindex "-1" 
+           :role "dialog" 
+           :aria-labelledby "mymodallabel" 
+           :aria-hidden "true"} 
+     [:div.modal-body [:p "hallo"]]]
     ))
     
 
