@@ -12,20 +12,21 @@
   (html5
    [:head
     [:title "Welcome to Times"] 
-    (include-css "/webjars/bootstrap/2.3.1/css/bootstrap.min.css")
-    (include-css "/webjars/bootstrap/2.3.1/css/bootstrap-responsive.min.css")
+    (include-css "/bootstrap/css/bootstrap.min.css")
+    (include-css "/bootstrap/css/bootstrap-responsive.min.css")
     (include-css "/css/times.css")
-    (include-js "/webjars/bootstrap/2.3.1/js/bootstrap.min.js")]
+    (include-js "/bootstrap/js/bootstrap.min.js")]
    [:body 
     (top-menu)
     [:div.container content]]))
 
 (defn top-menu []
-  [:div {:class "navbar navbar-fixed-top"}
-   [:div#navbar-inner
+  [:div {:class "navbar navbar-inverse navbar-fixed-top"}
+   [:div.navbar-inner
+    [:div.container
    (link-to {:class "brand"} "/" "Times")
    [:ul.nav 
-    [:li (link-to "/projects" "Projects")]]]])
+    [:li (link-to "/projects" "Projects")]]]]])
   
 (defn main-page []
   (base
@@ -36,7 +37,7 @@
 (defn project-page [] 
   (base 
     [:h1 "Projects"]
-    [:table
+    [:table.table
      [:tr
       [:th "Naam"] [:th "Omschrijving"] [:th "Verwijderen"]]
      (for [elt (models/get-projects-of-user "defaultuser")]
@@ -46,9 +47,14 @@
         ])
      ]
     (form-to [:post "/projects/add"]
-             [:p "Nieuw project: " (text-field "name")]
-             [:p "Omschrijving:" (text-field "description")]
-             (submit-button "Toevoegen"))))
+             [:fieldset
+              [:legend "Nieuw project toevoegen"]
+              [:label "Projectcode (uniek)"]
+              (text-field "name")
+              [:label "Omschrijving"]
+              (text-field "description")
+              [:label]
+              [:button {:class "btn" :type "submit"} "Toevoegen"]])))
     
 
 

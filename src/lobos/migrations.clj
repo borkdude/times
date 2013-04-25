@@ -29,41 +29,42 @@
 
 (defmigration create-projects
   (up []
+      (create
+        (table :projects
+               (integer :id :primary-key :auto-inc)
+               (varchar :name 100 :not-null)
+               (text :description)
+               (integer :user [:refer :users :id] :not-null)
+               (unique (table :projects) [:name :user]))))
+  (down []
+        (drop
+          (table :projects))))
+
+
+(defmigration create-timesheets
+  (up []
   	(create
-  		(table :projects
+  		(table :timesheets
     		(integer :id :primary-key :auto-inc)
-    		(varchar :name 100 :not-null :unique)
-        (text :description)
-        (integer :user [:refer :users :id] :not-null))))
+    		(integer :year :not-null)
+      	(integer :week :not-null)
+       	(varchar :description 100) ;; 
+        (integer :budget)
+       	(integer :user [:refer :users :id] :not-null))))
   (down []
     (drop
-      (table :projects))))
-;
-;(defmigration migration-3
-;  (up []
-;  	(create
-;  		(table :timesheet
-;    		(integer :id :primary-key :auto-inc)
-;    		(integer :year :not-null)
-;      	(integer :week :not-null)
-;       	(varchar :description 100)
-;        (varchar :status 100)
-;        (integer :contract_time)
-;       	(integer :user_id [:refer :user :id] :not-null))))
-;  (down []
-;    (drop
-;      (table :timesheet))))
-;
-;(defmigration migration-4
-;  (up []
-;  	(create
-;  		(table :hour_row
-;    		(integer :id :primary-key :auto-inc)
-;    		(integer :minutes :not-null)
-;      	(varchar :date 10 :not-null)
-;       	(varchar :description 100)
-;        (integer :project_id [:refer :project :id] :not-null)
-;       	(integer :timesheet_id [:refer :timesheet :id] :not-null))))
-;  (down []
-;    (drop
-;      (table :hour_row))))
+      (table :timesheets))))
+
+(defmigration create-hour-rows
+  (up []
+  	(create
+  		(table :sheetlines
+    		(integer :id :primary-key :auto-inc)
+    		(integer :minutes :not-null)
+      	(date :date :not-null)
+       	(varchar :description 150)
+        (integer :project [:refer :projects :id] :not-null)
+       	(integer :timesheet [:refer :timesheets :id] :not-null))))
+  (down []
+    (drop
+      (table :sheetlines))))

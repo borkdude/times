@@ -7,15 +7,16 @@
 
 (defroutes app-routes
   (route/resources "/")
+  (route/resources "/bootstrap/" 
+                   {:root "META-INF/resources/webjars/bootstrap/2.3.1/"}) 
   (route/not-found "Not Found"))
 
 ;;append your application routes to the all-routes vector
 (def all-routes [times-routes app-routes])
 
-(def app (-> all-routes
+(def app (->  all-routes
            noir-middleware/app-handler
-           ;;add your middlewares here
-           (resource/wrap-resource "/META-INF/resources/")
-             ))
+           ;; add your own middlewares here
+))
 
 (def war-handler (noir-middleware/war-handler app))

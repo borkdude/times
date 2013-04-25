@@ -29,3 +29,5 @@ resources/db.config.remoteproduction
 resources/db.config.productionlocal
 
 resources/db.config.productionremote
+
+.settings/org.eclipse.jdt.core.prefs
