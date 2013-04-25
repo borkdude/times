@@ -41,30 +41,30 @@
           (table :projects))))
 
 
-(defmigration create-timesheets
+(defmigration create-weeks
   (up []
   	(create
-  		(table :timesheets
+  		(table :weeks
     		(integer :id :primary-key :auto-inc)
     		(integer :year :not-null)
-      	(integer :week :not-null)
+      	(integer :weeknr :not-null)
        	(varchar :description 100) ;; 
         (integer :budget)
        	(integer :user [:refer :users :id] :not-null))))
   (down []
     (drop
-      (table :timesheets))))
+      (table :weeks))))
 
-(defmigration create-hour-rows
+(defmigration create-activities
   (up []
   	(create
-  		(table :sheetlines
+  		(table :activities
     		(integer :id :primary-key :auto-inc)
     		(integer :minutes :not-null)
       	(date :date :not-null)
        	(varchar :description 150)
         (integer :project [:refer :projects :id] :not-null)
-       	(integer :timesheet [:refer :timesheets :id] :not-null))))
+       	(integer :week [:refer :weeks :id] :not-null))))
   (down []
     (drop
-      (table :sheetlines))))
+      (table :activities))))
