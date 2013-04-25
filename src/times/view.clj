@@ -26,7 +26,8 @@
     [:div.container
    (link-to {:class "brand"} "/" "Times")
    [:ul.nav 
-    [:li (link-to "/projects" "Projects")]]]]])
+    [:li (link-to "/projects" "Projects")]
+    [:li (link-to "/weeks" "Weeks")]]]]])
   
 (defn main-page []
   (base
@@ -55,6 +56,11 @@
               (text-field "description")
               [:label]
               [:button {:class "btn" :type "submit"} "Toevoegen"]])))
+
+(defn week-page []
+  (base 
+    [:h1 "Weeks"]
+    ))
     
 
 

@@ -15,5 +15,6 @@
         (resp/redirect "/projects"))
   (GET "/projects/delete/:id" [id]
        (models/delete-project-of-user (clojure.edn/read-string id) *username*)
-       (resp/redirect "/projects")))
+       (resp/redirect "/projects"))
+  (GET "/weeks" [] (view/week-page)))
 
