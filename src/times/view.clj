@@ -65,9 +65,9 @@
       [:th "Weeknummer"] [:th "Omschrijving"] [:th "Verwijderen"]]
      (for [elt (models/get-weeks-of-user "defaultuser")]
        [:tr 
-        [:td (str (:weeknr elt) " / " (:year elt))]
+        [:td (link-to (str "/week/view/" (:id elt)) (str (:weeknr elt) " / " (:year elt)))]
         [:td (:description elt)]
-        [:td (link-to (str "/weeks/delete/" (:id elt)) "Delete")]
+        [:td (link-to (str "/week/delete/" (:id elt)) "Delete")]
         ])]
     ))
     
