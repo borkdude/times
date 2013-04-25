@@ -60,6 +60,15 @@
 (defn week-page []
   (base 
     [:h1 "Weeks"]
+    [:table.table
+     [:tr
+      [:th "Weeknummer"] [:th "Omschrijving"] [:th "Verwijderen"]]
+     (for [elt (models/get-weeks-of-user "defaultuser")]
+       [:tr 
+        [:td (str (:weeknr elt) " / " (:year elt))]
+        [:td (:description elt)]
+        [:td (link-to (str "/weeks/delete/" (:id elt)) "Delete")]
+        ])]
     ))
     
 

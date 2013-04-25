@@ -47,8 +47,8 @@
 
 (defn delete-week-of-user [id name]
   (delete weeks (where {:id id :user (get-userid-by-name name)})))
-  
 
+;;; activities ;;;
 (defentity activities)
                           
 
