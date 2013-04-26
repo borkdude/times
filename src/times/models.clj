@@ -40,7 +40,7 @@
           (join users (= :weeks.user :users.id))
           (where {:users.name name})))
 
-(defn insert-week-of-user [& {:keys [weeknr year description budget name] :as k}]
+(defn insert-week-of-user [{:keys [weeknr year description budget name] :as k}]
   (let [user (get-userid-by-name name)
         k (dissoc (assoc k :user user) :name)]
     (insert weeks (values k))))

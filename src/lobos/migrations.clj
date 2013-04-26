@@ -50,7 +50,8 @@
       	(integer :weeknr :not-null)
        	(varchar :description 100) ;; 
         (integer :budget)
-       	(integer :user [:refer :users :id] :not-null))))
+       	(integer :user [:refer :users :id] :not-null)
+        (unique (table :weeks) [:year :weeknr :user]))))
   (down []
     (drop
       (table :weeks))))

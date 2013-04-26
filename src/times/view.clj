@@ -20,7 +20,9 @@
     ]
    [:body 
     (top-menu)
-    [:div.container content]]))
+    [:div.container content]]
+   (include-js "/js/times.js") ;;include my own js after elements are created
+   ))
 
 (defn top-menu []
   [:div {:class "navbar navbar-inverse navbar-fixed-top"}
@@ -59,26 +61,53 @@
               [:label]
               [:button {:class "btn" :type "submit"} "Toevoegen"]])))
 
+;;; weeks 
+(defn new-week-form []
+  (form-to {:id "newweekform" }
+           [:post "/weeks/add"]
+           [:fieldset
+            ;[:legend "Add new week"]
+            [:label "Week number"]
+            (text-field {:id "formweeknr"} "weeknr")
+            [:label "Year"]
+            (text-field {:id "formyear"} "year")
+            [:label "Budget"]
+            (text-field "budget" "32")
+            [:label "Description"]
+            (text-field "description")
+            [:label]
+            #_[:button {:class "btn" :type "submit"} "Add"]]))
+  
+
+(defn modal-new-week []
+  [:div {:id "newWeek" 
+         :class "modal hide fade" 
+         :tabindex "-1" 
+         :role "dialog" 
+         ;;:aria-labelledby "mymodallabel" 
+         :aria-hidden "true"} 
+   [:div.modal-header 
+    [:h3 "Add new week"]
+    [:button {:type "button" :class "close" :data-dismiss "modal" :aria-hidden "true"} "&times;"]]
+   [:div.modal-body (new-week-form)]
+   [:div.modal-footer 
+    (link-to {:class "btn"} "#" "Close")
+    (link-to {:id "saveweek" :class "btn btn-primary"} "#" "Save")]])
+
 (defn week-page []
   (base 
     [:h1 "Weeks"]
+    [:button {:role "button" :class "btn" :data-toggle "modal" :data-target "#newWeek"} "New week"]
+    (modal-new-week)
     [:table.table
      [:tr
       [:th "Weeknummer"] [:th "Omschrijving"] [:th "Verwijderen"]]
      (for [elt (models/get-weeks-of-user "defaultuser")]
        [:tr 
-        [:td (link-to (str "/week/view/" (:id elt)) (str (:weeknr elt) " / " (:year elt)))]
+        [:td (link-to (str "/weeks/view/" (:id elt)) (str (:weeknr elt) " / " (:year elt)))]
         [:td (:description elt)]
-        [:td (link-to (str "/week/delete/" (:id elt)) "Delete")]
+        [:td (link-to (str "/weeks/delete/" (:id elt)) "Delete")]
         ])]
-    [:button {:role "button" :class "btn" :data-toggle "modal" :data-target "#myModal"} "foo"]
-    [:div {:id "myModal" 
-           :class "modal hide fade" 
-           :tabindex "-1" 
-           :role "dialog" 
-           :aria-labelledby "mymodallabel" 
-           :aria-hidden "true"} 
-     [:div.modal-body [:p "hallo"]]]
     ))
     
 
