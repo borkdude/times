@@ -34,6 +34,7 @@
                (integer :id :primary-key :auto-inc)
                (varchar :name 100 :not-null)
                (text :description)
+               (integer :budget) ;; saved in amount of minutes
                (integer :user [:refer :users :id] :not-null)
                (unique (table :projects) [:name :user]))))
   (down []

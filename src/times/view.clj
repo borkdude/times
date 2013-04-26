@@ -2,7 +2,8 @@
   (:use hiccup.form
         [hiccup.def :only [defhtml]]
         [hiccup.element :only [link-to]]
-        [hiccup.page :only [html5 include-js include-css]])
+        [hiccup.page :only [html5 include-js include-css]]
+        times.utils)
   (:require
         [times.models :as models]))
 
@@ -36,30 +37,29 @@
 (defn main-page []
   (base
     [:h1 "Times"]
-    [:p "Timesheet management for teachers"]))
+    [:p "Time tracking for projects."]))
 
 
 (defn project-page [] 
   (base 
     [:h1 "Projects"]
-    [:table.table
-     [:tr
-      [:th "Naam"] [:th "Omschrijving"] [:th "Verwijderen"]]
+    (form-to {:id "addproject"} [:post "/projects/add"]
+             [:table.table 
+              [:tr 
+               [:th "Name"] [:th "Description"] [:th "Budget"] [:th "Action"]]
+              [:tr 
+               [:td #_{:class "span3"} (text-field  "name")]
+               [:td #_{:class "span5"} (text-field  "description" )]
+               [:td #_{:class "span5"} (text-field  "budget" )]
+               [:td #_{:class "span4"} [:a {:href "javascript: $('#addproject').submit();"} "Create"]]]
      (for [elt (models/get-projects-of-user "defaultuser")]
-       [:tr [:td (:name elt)]
-        [:td (:description elt)]
-        [:td (link-to (str "/projects/delete/" (:id elt)) "Delete")]
+       [:tr [:td #_{:class "span3"} (:name elt)]
+        [:td #_{:class "span5"} (:description elt)]
+        [:td #_{:class "span5"} (minutes-to-hourexpr (:budget elt))]
+        [:td #_{:class "span4"} (link-to (str "/projects/delete/" (:id elt)) "Delete")]
         ])
-     ]
-    (form-to [:post "/projects/add"]
-             [:fieldset
-              [:legend "Nieuw project toevoegen"]
-              [:label "Projectcode (uniek)"]
-              (text-field "name")
-              [:label "Omschrijving"]
-              (text-field "description")
-              [:label]
-              [:button {:class "btn" :type "submit"} "Toevoegen"]])))
+     ])))
+
 
 ;;; weeks 
 (defn new-week-form []

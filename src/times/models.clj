@@ -21,12 +21,13 @@
           (join users (= :projects.user :users.id))
           (where {:users.name name})))
 
-(defn insert-project-of-user [name description user]
+(defn insert-project-of-user [name description budget user]
   (let [name (trim name)
         description (trim description)]
     (insert projects (values 
                        {:name name 
-                        :description description 
+                        :description description
+                        :budget budget
                         :user (get-userid-by-name user)}))))
 
 (defn delete-project-of-user [id user]
