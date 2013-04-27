@@ -5,7 +5,8 @@
         [hiccup.page :only [html5 include-js include-css]]
         times.utils)
   (:require
-        [times.models :as models]))
+        [times.models :as models]
+        [noir.validation :as vali]))
 
 (declare top-menu)
 
@@ -40,17 +41,21 @@
     [:p "Time tracking for projects."]))
 
 
-(defn project-page [] 
+#_(defn error-item [[err]]
+  [:p.error err])
+
+(defn project-page [{:keys [name description budget]}] 
   (base 
     [:h1 "Projects"]
     (form-to {:id "addproject"} [:post "/projects/add"]
              [:table.table 
               [:tr 
                [:th "Name"] [:th "Description"] [:th "Budget"] [:th "Action"]]
-              [:tr 
-               [:td #_{:class "span3"} (text-field  "name")]
-               [:td #_{:class "span5"} (text-field  "description" )]
-               [:td #_{:class "span5"} (text-field  "budget" )]
+              [:tr
+               (if-let [err (vali/on-error :name first)] [:div {:class "error"} err])
+               [:td #_{:class "span3"} (text-field {:class "namefield" :placeholder "Java-13-IV2A"} "name")]
+               [:td (text-field {:class "descriptionfield" :placeholder "Java in 2012-2013 to class IV2A"} "description" )]
+               [:td #_{:class "span5"} (text-field {:class "budgetfield" :placeholder "45:00"} "budget" )]
                [:td #_{:class "span4"} [:a {:href "javascript: $('#addproject').submit();"} "Create"]]]
      (for [elt (models/get-projects-of-user "defaultuser")]
        [:tr [:td #_{:class "span3"} (:name elt)]
@@ -59,6 +64,7 @@
         [:td #_{:class "span4"} (link-to (str "/projects/delete/" (:id elt)) "Delete")]
         ])
      ])))
+
 
 
 ;;; weeks 

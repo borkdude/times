@@ -1,4 +1,5 @@
-(ns times.utils)
+(ns times.utils
+  (:require clojure.edn))
 
 (defn print-pass [x]
   (println x)

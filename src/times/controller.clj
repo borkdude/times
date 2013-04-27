@@ -4,7 +4,8 @@
   (:require [compojure.core :as compojure]
             [times.view :as view]
             [times.models :as models]
-            [noir.response :as resp]))
+            [noir.response :as resp]
+            [noir.validation :as vali]))
 
 (def ^:dynamic *username* "defaultuser")
 
@@ -12,12 +13,20 @@
   (println x)
   x)
 
+(defn valid?  [{:keys [name description budget]}] 
+  (vali/rule (vali/min-length? name 3)
+             [:name "Name must be at least 3 characters long, you stupid."])
+  (not (vali/errors? :name)))
+
 (defroutes times-routes
   (GET "/" [] (view/main-page))
-  (GET "/projects" [] (view/project-page))
-  (POST "/projects/add" [name description budget]
-        (models/insert-project-of-user name description (hourexpr-to-minutes budget) *username*)
-        (resp/redirect "/projects"))
+  (GET "/projects" [] (view/project-page {}))
+  (POST "/projects/add" [& {:as project}]
+        (if (valid? (print-pass project)) 
+          (do
+            (models/insert-project-of-user (:name project) (:description project) (hourexpr-to-minutes (:budget project)) *username*)
+            (resp/redirect "/projects"))
+          (view/project-page project)))
   (GET "/projects/delete/:id" [id]
        (models/delete-project-of-user (clojure.edn/read-string id) *username*)
        (resp/redirect "/projects"))

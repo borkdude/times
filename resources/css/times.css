@@ -4,3 +4,7 @@ body {
 	padding-top: 60px;
 	/* 60px to make the container go all the way to the bottom of the topbar */
 }
+
+.namefield {width: 15em;}
+.descriptionfield {width: 35em;}
+.budgetfield {width: 5em; }
