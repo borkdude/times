@@ -15,9 +15,10 @@
   (not (vali/errors? :name :budget)))
 
 (defn valid-week? [{:keys [weeknr year description budget]}]
-  (vali/rule (integer? (clojure.edn/read-string weeknr))
-             [:weeknr "Week number is not an integer"])
-  (vali/rule (integer? (clojure.edn/read-string year))
+  (vali/rule (if-let [weeknr (to-int weeknr)]
+               (and (>= weeknr 1) (<= weeknr 53)))
+             [:weeknr "Week number is not an integer or not within range 1-53"])
+  (vali/rule (to-int year)
              [:year "Year is not an integer"])
   (vali/rule (try (hourexpr-to-minutes budget) 
                (catch Exception e nil))

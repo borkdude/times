@@ -7,6 +7,15 @@
   (println x)
   x)
 
+(defn to-int [thing]
+  (cond 
+    (integer? thing) 
+    thing
+    (string? thing)
+    (try (java.lang.Integer/parseInt thing)
+      (catch Exception e nil))
+    :else nil))
+
 (defn read-strings [m & keys]
   (reduce #(assoc %1 %2 (clojure.edn/read-string (%1 %2))) m keys))
 
