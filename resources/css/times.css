@@ -8,3 +8,8 @@ body {
 .namefield {width: 15em;}
 .descriptionfield {width: 35em;}
 .budgetfield {width: 5em; }
+
+.error, input[type="text"].error {
+    border-color: #b94a48;
+    color: #b94a48;
+}

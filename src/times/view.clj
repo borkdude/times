@@ -14,9 +14,10 @@
   (html5
    [:head
     [:title "Welcome to Times"] 
-    (include-css "/bootstrap/css/bootstrap.min.css")
+    (include-css "/bootstrap/css/bootstrap.css")
     (include-css "/bootstrap/css/bootstrap-responsive.min.css")
     (include-css "/css/times.css")
+    
     (include-js "/jquery/jquery.min.js") ;; always include jquery before bootstrap!
     (include-js "/bootstrap/js/bootstrap.js")
     ]
@@ -44,18 +45,34 @@
 #_(defn error-item [[err]]
   [:p.error err])
 
+(defn make-vali-class [error-key & classes]
+  (let [classes (if (vali/on-error error-key first) (conj classes "error") classes)]
+    (apply str (interpose " " classes))))
+
 (defn project-page [{:keys [name description budget]}] 
   (base 
     [:h1 "Projects"]
     (form-to {:id "addproject"} [:post "/projects/add"]
              [:table.table 
+              ;; table header
               [:tr 
                [:th "Name"] [:th "Description"] [:th "Budget"] [:th "Action"]]
               [:tr
-               (if-let [err (vali/on-error :name first)] [:div {:class "error"} err])
-               [:td #_{:class "span3"} (text-field {:class "namefield" :placeholder "Java-13-IV2A"} "name")]
+               ;; name
+               [:td  (text-field 
+                       ;; classes, with or without "error", depending on input
+                       {:class (make-vali-class :name "namefield") :placeholder "Java-13-IV2A"}
+                       ;; field name          
+                       "name" 
+                       ;; content
+                       name) 
+                ;; optional error message
+                (if-let [err (vali/on-error :name first)] [:p.error err])]
                [:td (text-field {:class "descriptionfield" :placeholder "Java in 2012-2013 to class IV2A"} "description" )]
-               [:td #_{:class "span5"} (text-field {:class "budgetfield" :placeholder "45:00"} "budget" )]
+               [:td #_{:class "span5"} (text-field 
+                                         {:class (make-vali-class :budget "budgetfield") 
+                                          :placeholder "45:00"} "budget" budget)
+                (if-let [err (vali/on-error :budget first)] [:p.error err])]
                [:td #_{:class "span4"} [:a {:href "javascript: $('#addproject').submit();"} "Create"]]]
      (for [elt (models/get-projects-of-user "defaultuser")]
        [:tr [:td #_{:class "span3"} (:name elt)]

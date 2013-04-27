@@ -16,6 +16,9 @@
 ;;; projects ;;;
 (defentity projects)
 
+(defn get-projectname-set []
+  (into #{} (map :name (select projects (fields [:name])))))
+
 (defn get-projects-of-user [name]
   (select projects
           (join users (= :projects.user :users.id))

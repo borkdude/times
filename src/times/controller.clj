@@ -4,25 +4,16 @@
   (:require [compojure.core :as compojure]
             [times.view :as view]
             [times.models :as models]
-            [noir.response :as resp]
-            [noir.validation :as vali]))
+            [times.validation :as vali]
+            [noir.response :as resp]))
 
 (def ^:dynamic *username* "defaultuser")
-
-#_(defn print-pass [x]
-  (println x)
-  x)
-
-(defn valid?  [{:keys [name description budget]}] 
-  (vali/rule (vali/min-length? name 3)
-             [:name "Name must be at least 3 characters long, you stupid."])
-  (not (vali/errors? :name)))
 
 (defroutes times-routes
   (GET "/" [] (view/main-page))
   (GET "/projects" [] (view/project-page {}))
   (POST "/projects/add" [& {:as project}]
-        (if (valid? (print-pass project)) 
+        (if (vali/valid-project? project) 
           (do
             (models/insert-project-of-user (:name project) (:description project) (hourexpr-to-minutes (:budget project)) *username*)
             (resp/redirect "/projects"))
