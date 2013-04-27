@@ -7,8 +7,6 @@
             [times.validation :as vali]
             [noir.response :as resp]))
 
-(def ^:dynamic *username* "defaultuser")
-
 (defroutes times-routes
   (GET "/" [] (view/main-page))
   (GET "/projects" [] (view/project-page {}))

@@ -1,6 +1,8 @@
 (ns times.utils
   (:require clojure.edn))
 
+(def ^:dynamic *username* "defaultuser")
+
 (defn print-pass [x]
   (println x)
   x)
