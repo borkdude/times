@@ -21,11 +21,13 @@
   (GET "/projects/delete/:id" [id]
        (models/delete-project-of-user (clojure.edn/read-string id) *username*)
        (resp/redirect "/projects"))
-  (GET "/weeks" [] (view/week-page))
-  (POST "/weeks/add" [& {:keys [weeknr year description budget] :as k}]
-        (let [k (read-strings k :weeknr :year :budget)] 
-          (do (models/insert-week-of-user (assoc k :name *username*)) 
-            (resp/redirect "/weeks"))))
+  (GET "/weeks" [] (view/week-page {}))
+  (POST "/weeks/add" [& {:keys [weeknr year description budget] :as week}]
+        (if (vali/valid-week? week)
+          (let [week (read-strings week :weeknr :year)] 
+            (do (models/insert-week-of-user (assoc week :name *username* :budget (hourexpr-to-minutes budget)))) 
+              (resp/redirect "/weeks"))
+          (view/week-page week)))
   (GET "/weeks/delete/:id" [id]
        (models/delete-week-of-user (clojure.edn/read-string id) *username*)
        (resp/redirect "/weeks")))

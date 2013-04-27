@@ -16,10 +16,10 @@ function getWeekAndYear(d) {
 
 jQuery(function () {
 
-	console.log('foobarn');
+	//console.log('foobarn');
 	var weekAndYear = getWeekAndYear(Date.now());
-	$('#formweeknr').attr('value',weekAndYear[1]);
-	$('#formyear').attr('value',weekAndYear[0]);
+	$('.weekfield').attr('value',weekAndYear[1]);
+	$('.yearfield').attr('value',weekAndYear[0]);
 
 	$('#saveweek').on('click', function(e){
 	    // We don't want this to act as a link so cancel the link action
