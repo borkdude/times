@@ -1,5 +1,6 @@
 (ns times.utils
-  (:require clojure.edn))
+  (:require clojure.edn
+            [clojure.string :refer [trim]]))
 
 (def ^:dynamic *username* "defaultuser")
 
@@ -12,7 +13,7 @@
     (integer? thing) 
     thing
     (string? thing)
-    (try (java.lang.Integer/parseInt thing)
+    (try (java.lang.Integer/parseInt (trim thing))
       (catch Exception e nil))
     :else nil))
 
@@ -21,9 +22,9 @@
 
 (defn hourexpr-to-minutes [hourexpr]
   (let [[hourstr minutestr] (clojure.string/split hourexpr #":")
-        hours (clojure.edn/read-string hourstr)
-        minutes (clojure.edn/read-string minutestr)]
-    (+ (* hours 60) minutes)))
+        hours (to-int hourstr)
+        minutes (to-int minutestr)]
+    (and hours minutes (+ (* hours 60) minutes))))
 
 (defn minutes-to-hourexpr [minutes]
   (let [pad (fn [n] (str (if (< n 10) "0") n))

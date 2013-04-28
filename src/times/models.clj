@@ -1,8 +1,12 @@
 (ns times.models
-  (:use korma.db korma.core times.config)
-  (:require [clojure.string :refer [trim]]))
+  (:use korma.db korma.core times.config))
 
 (defdb db (get-db-config))
+
+;;; helper ;;;
+(defn replace-username-by-userid [m]
+  (let [userid (get-userid-by-name (:user m))]
+    (assoc m :user userid)))
 
 ;;; users ;;;
 (defentity users)
@@ -26,14 +30,8 @@
           (join users (= :projects.user :users.id))
           (where {:users.name name})))
 
-(defn insert-project-of-user [name description budget user]
-  (let [name (trim name)
-        description (trim description)]
-    (insert projects (values 
-                       {:name name 
-                        :description description
-                        :budget budget
-                        :user (get-userid-by-name user)}))))
+(defn insert-project-of-user [{:keys [name description budget user] :as k}]
+  (insert projects (values (replace-username-by-userid k))))
 
 (defn delete-project-of-user [id user]
   (delete projects (where {:id id :user (get-userid-by-name user)})))
@@ -46,13 +44,11 @@
           (join users (= :weeks.user :users.id))
           (where {:users.name name})))
 
-(defn insert-week-of-user [{:keys [weeknr year description budget name] :as k}]
-  (let [user (get-userid-by-name name)
-        k (dissoc (assoc k :user user) :name)]
-    (insert weeks (values k))))
+(defn insert-week-of-user [{:keys [weeknr year description budget user] :as k}]
+  (insert weeks (values (replace-username-by-userid k))))
 
-(defn delete-week-of-user [id name]
-  (delete weeks (where {:id id :user (get-userid-by-name name)})))
+(defn delete-week-of-user [id user]
+  (delete weeks (where {:id id :user (get-userid-by-name user)})))
 
 ;;; activities ;;;
 (defentity activities)
