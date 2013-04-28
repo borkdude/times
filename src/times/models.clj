@@ -4,6 +4,7 @@
 (defdb db (get-db-config))
 
 ;;; helper ;;;
+(declare get-userid-by-name)
 (defn replace-username-by-userid [m]
   (let [userid (get-userid-by-name (:user m))]
     (assoc m :user userid)))
@@ -36,6 +37,14 @@
 (defn delete-project-of-user [id user]
   (delete projects (where {:id id :user (get-userid-by-name user)})))
 
+
+(defn edit-project-of-user [{:keys [name description budget user oldname] :as k}]
+  (update projects 
+          (set-fields 
+            (dissoc (replace-username-by-userid k) :oldname))
+          (where {:name oldname})))
+          
+
 ;;; weeks ;;;
 (defentity weeks)
 
@@ -52,6 +61,8 @@
 
 ;;; activities ;;;
 (defentity activities)
+
+
                           
 
 

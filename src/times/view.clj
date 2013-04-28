@@ -20,11 +20,11 @@
     
     (include-js "/jquery/jquery.min.js") ;; always include jquery before bootstrap!
     (include-js "/bootstrap/js/bootstrap.js")
+    (include-js "/js/times.js") ;;include my own js after elements are created
     ]
    [:body 
     (top-menu)
     [:div.container content]]
-   (include-js "/js/times.js") ;;include my own js after elements are created
    ))
 
 (defn top-menu []
@@ -56,27 +56,64 @@
    ;; optional error message
    (if-let [err (vali/on-error error-key first)] [:p.error err])])
 
-(defn project-page [{:keys [name description budget]}] 
+(defn project-page [{:keys [name description budget oldname] :as project}] 
   (base 
     [:h1 "Projects"]
     ;; input for new project
+    (modal-edit-project project)
+    (if oldname [:script (str "$('#editProject').modal('show'); //jQuery(function () {loadEditProject('" oldname "')});")])
     (form-to {:id "addproject"} [:post "/projects/add"]
              [:table.table 
               ;; table header
               [:tr 
                [:th "Name"] [:th "Description"] [:th "Budget"] [:th "Action"]]
-              [:tr
-               (make-validated-input :name "name" "Java-13-IV2A" name "namefield")
-               [:td (text-field {:class "descriptionfield" :placeholder "Java in 2012-2013 to class IV2A"} "description" description)]
-               (make-validated-input :budget "budget" "45:00" budget "budgetfield")
-               [:td [:a {:href "javascript: $('#addproject').submit();"} "Create"]]]
+                [:tr
+                 (make-validated-input :name "name" "Java-13-IV2A" (if (not oldname) name) "namefield")
+                 [:td (text-field {:class "descriptionfield" :placeholder "Java in 2012-2013 to class IV2A"} "description" (if (not oldname) description))]
+                 (make-validated-input :budget "budget" "45:00" (if (not oldname) budget) "budgetfield")
+                 [:td [:a {:class "btn btn-primary" :href "javascript: $('#addproject').submit();"} "Create"]]]
               ;; rest of table for projects         
               (for [elt (models/get-projects-of-user "defaultuser")]
-                [:tr [:td #_{:class "span3"} (:name elt)]
-                 [:td #_{:class "span5"} (:description elt)]
-                 [:td #_{:class "span5"} (minutes-to-hourexpr (:budget elt))]
-                 [:td #_{:class "span4"} (link-to (str "/projects/delete/" (:id elt)) "Delete")]
+                [:tr {:id (:name elt)} [:td.name (:name elt)]
+                 [:td.description (:description elt)]
+                 [:td.budget (minutes-to-hourexpr (:budget elt))]
+                 [:td [:div.btn-group 
+                       [:button {:class "btn btn-primary dropdown-toggle" :data-toggle "dropdown"} "Action" [:span.caret]]
+                       [:ul.dropdown-menu
+                        [:li (link-to {:onclick (str "loadEditProject('" (:name elt) "');") :data-toggle "modal" :data-target "#editProject"} "#" "Edit")] 
+                        [:li (link-to {:onclick (str "document.location.href='" "/projects/delete/" (:id elt) "';")}"#" "Delete")]]] #_(link-to (str "/projects/delete/" (:id elt)) "Delete")]
                  ])])))
+
+(defn edit-project-form [{:keys [name description budget oldname] :as project}]
+  (form-to {:id "editprojectform" }
+           [:post "/projects/edit"]
+           [:fieldset
+            ;[:legend "Add new week"]
+            (text-field {:type "hidden" :id "oldname"} "oldname" (:oldname project))
+            [:label "Name"]
+            (make-validated-input :editname "name" "Java-13-IV2A" (:name project) "namefield")
+            [:label "Description"]
+            [:td (text-field {:class "descriptionfield" :placeholder "Java in 2012-2013 to class IV2A"} "description" (:description project))]
+            [:label "Budget"]
+            (make-validated-input :editbudget "budget" "45:00" (:budget project) "budgetfield")
+            #_[:label]
+            #_[:button {:class "btn" :type "submit"} "Add"]]))
+
+(defn modal-edit-project [project]
+  [:div {:id "editProject" 
+         :class "modal hide fade" 
+         :tabindex "-1" 
+         :role "dialog" 
+         ;;:aria-labelledby "mymodallabel" 
+         :aria-hidden "true"} 
+   [:div.modal-header 
+    [:a {:class "close" :data-dismiss "modal" :aria-hidden "true"} "&times;"]
+    [:h3 "Edit project"]]
+   [:div.modal-body (edit-project-form project)]
+   [:div.modal-footer 
+    (link-to {:class "btn" :data-dismiss "modal"} "#" "Close")
+    [:a {:id "editproject" :class "btn btn-primary" :href "javascript: $('#editprojectform').submit();"} "Save"]]])
+
 
 ;;; weeks 
 #_(defn new-week-form []

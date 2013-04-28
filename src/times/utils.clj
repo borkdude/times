@@ -17,7 +17,7 @@
       (catch Exception e nil))
     :else nil))
 
-(defn read-strings [m & keys]
+#_(defn read-strings [m & keys]
   (reduce #(assoc %1 %2 (clojure.edn/read-string (%1 %2))) m keys))
 
 (defn hourexpr-to-minutes [hourexpr]

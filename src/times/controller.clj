@@ -19,14 +19,22 @@
   (GET "/projects" [] (view/project-page {}))
   (POST "/projects/add" [& {:as projectfields}]
         (let [project (decode-project projectfields)]
-          (if (vali/valid-project? project) 
+          (if (vali/valid-new-project? project) 
             (do
               (models/insert-project-of-user (assoc project :user *username*))
               (resp/redirect "/projects"))
             (view/project-page projectfields))))
   (GET "/projects/delete/:id" [id]
        (models/delete-project-of-user (to-int id) *username*)
-       (resp/redirect "/projects")))
+       (resp/redirect "/projects"))
+  (POST "/projects/edit" [& {:as projectfields}]
+        (let [project (decode-project projectfields)]
+          (if (vali/valid-edit-project? project)
+            (do 
+              (models/edit-project-of-user (assoc project :user *username*))
+              (resp/redirect "/projects"))
+            (view/project-page projectfields)))))
+              
 
 ;; weeks
 (defn decode-week [{:keys [weeknr year description budget] :as weekfields}]

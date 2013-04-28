@@ -14,6 +14,23 @@ function getWeekAndYear(d) {
     return [d.getFullYear(), weekNo];
 }
 
+function loadEditProject(projectname) {
+	var projname = $('#'+projectname+ ' td.name').text();
+	var description =  $('#'+projectname+ ' td.description').text();
+	var budget =  $('#'+projectname+ ' td.budget').text();
+	
+	$('#editprojectform .namefield').val(projname);
+	$('#editprojectform .namefield').removeClass("error");
+	$('#editprojectform .namefield + p').remove();
+	
+	$('#editprojectform #oldname').val(projname);
+	$('#editprojectform .descriptionfield').val(description);
+	
+	$('#editprojectform .budgetfield').val(budget);
+	$('#editprojectform .budgetfield').removeClass("error");
+	$('#editprojectform .budgetfield + p').remove();
+}
+
 jQuery(function () {
 	//console.log('foobarn');
 	var weekAndYear = getWeekAndYear(Date.now());
