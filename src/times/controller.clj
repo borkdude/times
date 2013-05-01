@@ -2,7 +2,10 @@
   (:use compojure.core
         times.utils)
   (:require [compojure.core :as compojure]
-            [times.view :as view]
+            [times.views.common :refer [main-page]]
+            [times.views.projects :refer [project-page]]
+            [times.views.weeks :refer [weeks-page]]
+            [times.views.timesheet :refer [timesheet-page]]  
             [times.models :as models]
             [times.validation :as vali]
             [noir.response :as resp]
@@ -16,14 +19,14 @@
          :budget (hourexpr-to-minutes budget)))
 
 (defroutes project-routes
-  (GET "/projects" [] (view/project-page {}))
+  (GET "/projects" [] (project-page {}))
   (POST "/projects/add" [& {:as projectfields}]
         (let [project (decode-project projectfields)]
           (if (vali/valid-new-project? project) 
             (do
               (models/insert-project-of-user (assoc project :user *username*))
               (resp/redirect "/projects"))
-            (view/project-page projectfields))))
+            (project-page projectfields))))
   (GET "/projects/delete/:id" [id]
        (models/delete-project-of-user (to-int id) *username*)
        (resp/redirect "/projects"))
@@ -33,7 +36,7 @@
             (do 
               (models/edit-project-of-user (assoc project :user *username*))
               (resp/redirect "/projects"))
-            (view/project-page projectfields)))))
+            (project-page projectfields)))))
               
 
 ;; weeks
@@ -44,21 +47,27 @@
          :description (trim description)
          :budget (hourexpr-to-minutes budget)))
 
-(defroutes week-routes
-  (GET "/weeks" [] (view/week-page {}))
+(defroutes weeks-routes
+  (GET "/weeks" [] (weeks-page {}))
   (POST "/weeks/add" [& {:keys [weeknr year description budget] :as weekfields}]
         (let [week (decode-week weekfields)]
           (if (vali/valid-week? week) 
             (do (models/insert-week-of-user (assoc week :user *username*)) 
               (resp/redirect "/weeks"))
-            (view/week-page weekfields))))
+            (weeks-page weekfields))))
   (GET "/weeks/delete/:id" [id]
        (models/delete-week-of-user (to-int id) *username*)
        (resp/redirect "/weeks")))
 
+;; single week overview
+(defroutes timesheet-routes
+  (GET "/timesheet/:id" [id]
+       (timesheet-page id)))
+
 ;; all routes
 (defroutes times-routes
-  (GET "/" [] (view/main-page))
+  (GET "/" [] (main-page))
   project-routes
-  week-routes)
+  weeks-routes
+  timesheet-routes)
 
