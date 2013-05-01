@@ -91,5 +91,6 @@
                  [:td (:description elt)]
                  [:td (minutes-to-hourexpr (:budget elt))]
                  [:td (link-to (str "/weeks/delete/" (:id elt)) "Delete")]
-                 ])])))
+                 ])]
+             [:script "suggestWeekAndYear();"])))
 ;; TODO make this form the same as project screen

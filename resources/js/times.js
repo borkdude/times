@@ -15,35 +15,26 @@ function getWeekAndYear(d) {
 }
 
 function loadEditProject(projectname) {
-	var projname = $('#'+projectname+ ' td.name').text();
 	var description =  $('#'+projectname+ ' td.description').text();
 	var budget =  $('#'+projectname+ ' td.budget').text();
 	
-	$('#editprojectform .namefield').val(projname);
+	// set values for edit and remove previous error messages
+	$('#editprojectform .namefield').val(projectname);
 	$('#editprojectform .namefield').removeClass("error");
 	$('#editprojectform .namefield + p').remove();
 	
-	$('#editprojectform #oldname').val(projname);
+	$('#editprojectform #oldname').val(projectname);
 	$('#editprojectform .descriptionfield').val(description);
 	
 	$('#editprojectform .budgetfield').val(budget);
 	$('#editprojectform .budgetfield').removeClass("error");
 	$('#editprojectform .budgetfield + p').remove();
+	
 }
 
-jQuery(function () {
-	//console.log('foobarn');
+function suggestWeekAndYear() {
 	var weekAndYear = getWeekAndYear(Date.now());
-	
 	$('.weekfield').attr('placeholder',weekAndYear[1]);
 	$('.yearfield').attr('placeholder',weekAndYear[0]);
-
-	$('#saveweek').on('click', function(e){
-	    // We don't want this to act as a link so cancel the link action
-	    //e.preventDefault();
-		console.log("foo");
-	    // Find form and submit it
-	    $('#newweekform').submit();
-	  });
-})
+}
 
