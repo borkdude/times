@@ -20,5 +20,3 @@
            noir-middleware/app-handler
            ;; add your own middlewares here
 ))
-
-(def war-handler (noir-middleware/war-handler app))

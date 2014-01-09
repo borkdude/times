@@ -4,14 +4,14 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [lib-noir "0.4.9"]
-                 [compojure "1.1.5"]
+                 [lib-noir "0.7.9"]
+                 [compojure "1.1.6"]
                  [ring-server "0.3.1"]
-                 [hiccup "1.0.2"]
+                 [hiccup "1.0.4"]
                  [korma "0.3.0-RC5"]
                  [org.clojars.kbarber/postgresql "9.2-1002.jdbc4"]
                  [org.webjars/bootstrap "3.0.3"]]
-  :ring {:handler times.handler/war-handler
+  :ring {:handler times.handler/app
          :nrepl {:start? true :port 4555}}
   :profiles {:production
              {:ring
