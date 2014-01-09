@@ -7,9 +7,9 @@
 
 (defroutes app-routes
   (route/resources "/")
-  (route/resources "/bootstrap/" 
-                   {:root "META-INF/resources/webjars/bootstrap/2.3.1/"})
-  (route/resources "/jquery/" 
+  (route/resources "/bootstrap/"
+                   {:root "META-INF/resources/webjars/bootstrap/3.0.3/"})
+  (route/resources "/jquery/"
                    {:root "META-INF/resources/webjars/jquery/1.9.0/"})
   (route/not-found "Not Found"))
 
