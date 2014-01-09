@@ -8,6 +8,7 @@
 ;; to execute migrations:
 
 ;; possibly adapt login settings in db.config
+
 ;; lein with-profile +lobos repl
 ;; (use 'lobos.core 'lobos.connectivity 'lobos.migration 'lobos.migrations 'times.config)
 ;; (open-global (get-db-config))
@@ -16,6 +17,17 @@
 ;; revert login settings in db.config
 ;; more info, see https://github.com/budu/lobos
 ;; as a last step you will need to insert a user 'defaultuser' in the table users
+
+
+;; TODO: move these notes to another file
+
+;; psql:
+;; create ROLE times LOGIN;
+;; create DATABASE times WITH OWNER times;
+;; ALTER ROLE times WITH PASSWORD '...';
+;; SHOW hba_file;
+;; Edit pg_hba.conf and set auth method to 'md5'
+;; ALTER USER times VALID UNTIL 'infinity';
 
 (defmigration create-users
   (up []
